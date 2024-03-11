@@ -43,14 +43,12 @@ public class AACMappings {
   /**
    * Creates a new empty filename with the given filename
    */
-  public AACMappings(String filename) {
-    
+  public AACMappings(String filename) throws Exception {
+    File file = new File(filename);
+    this.homeCategory = new AACCategory("");
+    this.categories = new AssociativeArray<String, AACCategory>();
 
     try {
-      File file = new File(filename);
-      this.homeCategory = new AACCategory("");
-      curCategory = homeCategory;
-      this.categories = new AssociativeArray<String, AACCategory>();
       // organizing the home category to add things 
       //categories.set("", curCategory);
       Scanner input = new Scanner(file); // create a Scanner object
@@ -63,20 +61,25 @@ public class AACMappings {
         // if the line doesn't start with ">", the line is a category
         if (_line_.charAt(0) != '>') {
           // set current category as the given category naem
-          this.curCategory = new AACCategory(stringSplit[1]);
-          categories.set(stringSplit[0], curCategory);
-          homeCategory.addItem​(stringSplit[0], stringSplit[1]);
+          curCategory = this.homeCategory;
+          //categories.set(stringSplit[0], curCategory);
+          this.add(stringSplit[0], stringSplit[1]);
+          curCategory = this.categories.get(stringSplit[0]);
         // if not a category, it is a inner image
         } else {
-          // reset the first string to the string without the ">"
-          stringSplit[0] = stringSplit[0].substring(1);
-          // create current
-          curCategory.addItem​(stringSplit[0], stringSplit[1]);
+          this.add(stringSplit[0].substring(1), stringSplit[1]);
+          // // reset the first string to the string without the ">"
+          // stringSplit[0] = stringSplit[0].substring(1);
+          // // create current
+          // curCategory.addItem​(stringSplit[0], stringSplit[1]);
         }
+        //reset();
       } // while loop
       input.close();
+      
     } catch (FileNotFoundException e) {
-    } catch (NullKeyException e) { }
+    }
+    reset();
   } // AACMappings(String filename)
 
   // +---------+-----------------------------------------------------
@@ -88,7 +91,7 @@ public class AACMappings {
    */
   public void add(String imageLoc, String text) {
     try {
-      if (curCategory == null) {
+      if (this.getCurrentCategory() == null) {
         this.categories.set(imageLoc, new AACCategory(text));
       } else {
         curCategory.addItem​(imageLoc, text);
@@ -102,9 +105,6 @@ public class AACMappings {
    * Gets the current category
    */
   public String getCurrentCategory() {
-    if (curCategory == null) {
-      return null;
-    }
     return curCategory.getCategory();
   } //getCurrentCategory()
 
@@ -112,10 +112,7 @@ public class AACMappings {
    * Provides an array of all the images in the current category
    */
   public String[] getImageLocs() {
-    if(curCategory != null) {
-      return curCategory.getImages();
-    }
-    return null;
+    return this.curCategory.getImages();
   } // getImageLocs()
 
   /**
@@ -141,7 +138,7 @@ public class AACMappings {
    * Determines if the image represents a category or text to speak
    */
   public boolean isCategory​(String imageLoc) {
-    return categories.hasKey(imageLoc);
+    return this.curCategory.hasImage​(imageLoc);
   } // isCategory​(String imageLoc)
 
   /**
@@ -157,10 +154,10 @@ public class AACMappings {
   public void writeToFile(String filename) {
     try 
     (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-      for(int i = 0; i < categories.size(); i++) {
-        String category = categories.pairs[i].key;
+      for(int i = 0; i < this.categories.size(); i++) {
+        String category = categories.pairs[i].thisKey();
         for (String locate : this.categories.get(category).getImages()) {
-          writer.write(locate + this.categories.get(category).getText(locate) + '\n');
+          writer.write(">" + locate + " " + this.categories.get(category).getText(locate) + '\n');
         }
       }
     } catch (KeyNotFoundException e) {

@@ -67,7 +67,7 @@ public class AssociativeArray<K, V> {
       // loop to iterate
       for (int i = 0; i < this.size; i++) {
         // set each thing in null to the key and value
-        clonedArr.set(pairs[i].key, pairs[i].value);
+        clonedArr.set(pairs[i].thisKey(), pairs[i].thisVal());
       }
     } catch (NullKeyException e) {}
     return clonedArr;
@@ -88,10 +88,10 @@ public class AssociativeArray<K, V> {
         // if it is the first thing in the array
         if (i == 0) {
           // replace the empty str with the statement
-          stringHolder = pairs[0].key + ": " + pairs[0].value;
+          stringHolder = pairs[0].thisKey() + ": " + pairs[0].thisVal();
         } else {
           // after the 0
-          stringHolder = stringHolder + ", " + pairs[i].key + ": " + pairs[i].value;
+          stringHolder = stringHolder + ", " + pairs[i].thisKey() + ": " + pairs[i].thisVal();
         }
       } // for loop
     } // condition check
@@ -124,8 +124,8 @@ public class AssociativeArray<K, V> {
     }
     
     for (int i = 0; i < this.size; i++) {
-      if (pairs[i].key.equals(key)) {
-        pairs[i].value = value;
+      if (pairs[i].thisKey().equals(key)) {
+        pairs[i].changeVal(value);
         // check if array is full
       } else if (this.isFull()) {
         this.expand();
@@ -146,14 +146,21 @@ public class AssociativeArray<K, V> {
       throw new KeyNotFoundException("Key not available.");
     }
     // for loop to check if & where it exists
-    for(int i = 0; i < this.size; i++) {
-      // it current pair key is what we are looking for
-      if (hasKey(key)) {
-        // return the value
-        return pairs[i].value;
-      } // condition check
-    } // for loop
-    return null;
+    // for(int i = 0; i < this.size; i++) {
+    //   // it current pair key is what we are looking for
+    //   if (this.pairs[i].thisKey().equals(key)) {
+    //     // return the value
+    //     return this.pairs[i].thisVal();
+    //   } // condition check
+    // } // for loop
+
+    // consice form of loop
+    // note to self: use find(key) instead of loop ****
+    try {
+      return this.pairs[find(key)].thisVal();
+    } catch (Exception e) {
+      throw new KeyNotFoundException("Key not available.");
+    }
   } // get(K)
 
   /**
@@ -167,7 +174,7 @@ public class AssociativeArray<K, V> {
     }
     
     for (int i = 0; i < this.size; i++) {
-      if (pairs[i].key.equals(key)) {
+      if (pairs[i].thisKey().equals(key)) {
         return true;
       } // condition check
     } // loop
@@ -185,7 +192,7 @@ public class AssociativeArray<K, V> {
     int shift = 0;
     if (hasKey(key)) {
       for(int i = 0; i < this.size; i++) {
-        if (pairs[i].key.equals(key)) {
+        if (pairs[i].thisKey().equals(key)) {
           pairs[i] = null;
           // pairs[i].key = null;
           // pairs[i].value = null;
@@ -216,7 +223,7 @@ public class AssociativeArray<K, V> {
     String[] keyArr = new String[this.size];
 
     for (int i = 0; i < this.size; i++) {
-      keyArr[i] = pairs[i].key.toString();
+      keyArr[i] = pairs[i].thisKey().toString();
     }
     return keyArr;
   }
@@ -239,7 +246,7 @@ public class AssociativeArray<K, V> {
   public int find(K key) throws KeyNotFoundException {
     if (hasKey(key)) {
       for (int i = 0; i < this.size; i++) {
-        if (pairs[i].key.equals(key)) {
+        if (pairs[i].thisKey().equals(key)) {
           return i;
         } // return key in current index
       } // for loop

@@ -12,12 +12,12 @@ class KVPair<K,V> {
   /**
    * The key.
    */
-  public K key;
+  private K key;
 
   /**
    * The value.
    */
-  public V value;
+  private V value;
 
   // +--------------+------------------------------------------------
   // | Constructors |
@@ -49,4 +49,16 @@ class KVPair<K,V> {
   public String toString() {
     return "{ " + this.key.toString() + " : " + this.value.toString() + " }";
   } // toString()
+
+  public K thisKey(){
+    return this.key;
+  }
+
+  public V thisVal(){
+    return this.value;
+  }
+
+  public void changeVal(V newVal) {
+    this.value = newVal;
+  }
 } // class KVPair

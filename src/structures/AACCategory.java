@@ -42,17 +42,14 @@ public class AACCategory {
    * @throws NullKeyException 
    */
   public void addItem​(String imageLoc, String text) throws NullKeyException {
-      txtArr.set(imageLoc, text);
+      this.txtArr.set(imageLoc, text);
   } // addItem​(String imageLoc, String text)                                                  
 
   /**
    * Returns the name of the category
    */
   public String getCategory() {
-    if(category == null) {
-      return null;
-    }
-    return category;
+    return this.category;
   } // getCategory()
 
   /**
@@ -67,13 +64,18 @@ public class AACCategory {
    */
   public String getText(String imageLoc) {
     String txt = "";
+    // try {
+    //   for (int i = 0; i < txtArr.size(); i++) {
+    //     if(txtArr.pairs[i].key == imageLoc) {
+    //       txt = txtArr.get(txtArr.pairs[i].key);
+    //     }
+    //   } // for loop
+    // } catch (KeyNotFoundException e) {}
+    // return txt;
     try {
-      for (int i = 0; i < txtArr.size(); i++) {
-        if(txtArr.pairs[i].key == imageLoc) {
-          txt = txtArr.get(txtArr.pairs[i].key);
-        }
-      } // for loop
-    } catch (KeyNotFoundException e) {}
+      this.txtArr.get(imageLoc);
+    } catch (KeyNotFoundException e) {
+    }
     return txt;
   } // getText(String imageLoc)
   

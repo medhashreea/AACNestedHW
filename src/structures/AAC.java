@@ -47,7 +47,11 @@ public class AAC implements ActionListener {
 	 * images and text that will be in the AAC
 	 */
 	public AAC(String filename){ 
-		this.aacMappings = new AACMappings(filename);
+		try {
+			this.aacMappings = new AACMappings(filename);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		this.images = this.aacMappings.getImageLocs();
 		this.startIndex = 0;
 		this.endIndex = Math.min(NUM_ACROSS*NUM_DOWN, this.images.length);
