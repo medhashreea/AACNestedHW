@@ -56,7 +56,7 @@ public class AACCategory {
    * Returns an array of all the images in the category
    */
   public String[] getImages() {
-    return txtArr.getAllKeys();
+    return this.txtArr.getAllKeys();
   } // getImageLocs()
 
   /**
@@ -64,19 +64,20 @@ public class AACCategory {
    */
   public String getText(String imageLoc) {
     String txt = "";
-    // try {
-    //   for (int i = 0; i < txtArr.size(); i++) {
-    //     if(txtArr.pairs[i].key == imageLoc) {
-    //       txt = txtArr.get(txtArr.pairs[i].key);
-    //     }
-    //   } // for loop
-    // } catch (KeyNotFoundException e) {}
-    // return txt;
     try {
-      this.txtArr.get(imageLoc);
-    } catch (KeyNotFoundException e) {
-    }
+      for (int i = 0; i < txtArr.size(); i++) {
+        if(txtArr.pairs[i].thisKey() == imageLoc) {
+          txt = txtArr.get(txtArr.pairs[i].thisKey());
+          return txt;
+        }
+      } // for loop
+    } catch (KeyNotFoundException e) {}
     return txt;
+    // try {
+    //   this.txtArr.get(imageLoc);
+    // } catch (KeyNotFoundException e) {
+    // }
+    // return txt;
   } // getText(String imageLoc)
   
   /**

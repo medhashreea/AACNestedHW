@@ -92,9 +92,10 @@ public class AACMappings {
   public void add(String imageLoc, String text) {
     try {
       if (this.getCurrentCategory() == null) {
+        this.homeCategory.addItem​(imageLoc, text);
         this.categories.set(imageLoc, new AACCategory(text));
       } else {
-        curCategory.addItem​(imageLoc, text);
+        this.curCategory.addItem​(imageLoc, text);
       }
     } catch (NullKeyException e) {
       e.printStackTrace();
@@ -120,18 +121,48 @@ public class AACMappings {
    * text with the image. If the image provided is a category, it also 
    * updates the AAC's current category to be the category associated 
    * with that image
+   * 
+   * given an image, it will either 
+   *    return the name of the category associated with that image 
+   *    if on the home screen and update the current category to that 
+   *    category or 
+   * 
+   * if homepage
+   *    update curCategory to given catgory
+   *      this.curCatetgory = this.categories.get(imageLoc);
+   *    return NAME of new category (ex: food)
+   *    
+   * if category
+   *    return speech (value)
+   *    if in a category
+   *      it will return the text to be spoken that is 
+   * associated with that image. If the image is not found in the expected area, 
+   * it will throw the ElementNotFoundException
+
    */
   public String getText(String imageLoc) {
-    // check if in home page usin comparisun to null
-    if (isCategory​(imageLoc)) {
+    // check if in the home page
+    if(this.getCurrentCategory() == null) {
+      // if in homepage, get the 
+      String txt = this.curCategory.getText(imageLoc);
       try {
-        this.curCategory = categories.get(imageLoc);
-        return this.curCategory.getCategory();
+        this.curCategory = this.categories.get(imageLoc);
       } catch (KeyNotFoundException e) {
       }
+      return txt;
     }
-    // else, return the text to be spoken that is associated with that image
-    return curCategory.getText(imageLoc);
+    // // check if in home page usin comparisun to null
+    // if (isCategory​(imageLoc)) {
+    //   try {
+    //     this.curCategory = categories.get(imageLoc);
+    //     return this.curCategory.getCategory();
+    //   } catch (KeyNotFoundException e) {
+    //   }
+    // }
+    // // else, return the text to be spoken that is associated with that image
+    // return curCategory.getText(imageLoc);
+
+    return this.curCategory.getText(imageLoc);
   } // getImageLocs()
 
   /**
