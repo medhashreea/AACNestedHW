@@ -1,4 +1,3 @@
-package structures;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,19 +6,19 @@ import java.io.IOException;
 import java.util.Scanner;
 
 /**
- * @author Medhashree Adhikari
+ * The AACMappings class keeps track of the complete set of AAC
+ * mappings (multiple ACCCategories). It storea the mapping of the
+ * images on the home page to the AACCategories. The class keeps
+ * track of the current category that is being displayed.
  * 
- * Purpose:
- *   The AACMappings class keeps track of the complete set of AAC 
- *   mappings (multiple ACCCategories). It storea the mapping of the 
- *   images on the home page to the AACCategories. The class keeps 
- *   track of the current category that is being displayed.
+ * @author Medhashree Adhikari
  */
 
-public class AACMappings {
+public class AACMappings extends Object {
   // +--------+-------------------------------------------------------
   // | Fields |
   // +--------+
+
   /**
    * The home category
    */
@@ -34,161 +33,148 @@ public class AACMappings {
    * Creates a new associative array
    */
   AssociativeArray<String, AACCategory> categories;
-  
- // AssociativeArray<String, String> imageArr = new AssociativeArray<>();
 
   // +--------------+------------------------------------------------
   // | Constructors |
   // +--------------+
+
   /**
    * Creates a new empty filename with the given filename
    */
-  public AACMappings(String filename) throws Exception {
+  public AACMappings(String filename) throws FileNotFoundException {
     File file = new File(filename);
     this.homeCategory = new AACCategory("");
     this.categories = new AssociativeArray<String, AACCategory>();
 
     try {
-      // organizing the home category to add things 
-      //categories.set("", curCategory);
+      // organizing the home category to add things
       Scanner input = new Scanner(file); // create a Scanner object
+
       while (input.hasNext()) {
-        String _line_ = input.nextLine();
+        String _line = input.nextLine();
         // split the line by the space into 2 parts
-        String[] stringSplit = _line_.split(" ", 2);
-        
+        String[] stringSplit = _line.split(" ", 2);
+
         // check if it is a category or item
         // if the line doesn't start with ">", the line is a category
-        if (_line_.charAt(0) != '>') {
+        if (_line.charAt(0) != '>') {
           // set current category as the given category naem
           curCategory = this.homeCategory;
-          //categories.set(stringSplit[0], curCategory);
-          this.add(stringSplit[0], stringSplit[1]);
+          this.add​(stringSplit[0], stringSplit[1]);
           curCategory = this.categories.get(stringSplit[0]);
-        // if not a category, it is a inner image
+          // if not a category, it is a inner image
         } else {
-          this.add(stringSplit[0].substring(1), stringSplit[1]);
-          // // reset the first string to the string without the ">"
-          // stringSplit[0] = stringSplit[0].substring(1);
-          // // create current
-          // curCategory.addItem​(stringSplit[0], stringSplit[1]);
-        }
-        //reset();
+          this.add​(stringSplit[0].substring(1), stringSplit[1]);
+          // reset the first string to the string without the ">"
+        } // if/else
+
       } // while loop
+
       input.close();
-      
-    } catch (FileNotFoundException e) {
+    } catch (FileNotFoundException | KeyNotFoundException e) {
     }
+
     reset();
   } // AACMappings(String filename)
 
   // +---------+-----------------------------------------------------
   // | Methods |
   // +---------+
+
   /**
-   * Adds the mapping to the current category (or the default 
-   * category if that is the current category)
+   * Adds the mapping to the current category (or the default category if that is
+   * the current category)
+   * 
+   * @param imageLoc
+   * @param text
+   * @throws KeyNotFoundException
+   * @throws NullKeyException
    */
-  public void add(String imageLoc, String text) {
+  public void add​(String imageLoc, String text) {
     try {
-      if (this.getCurrentCategory() == null) {
-        this.homeCategory.addItem​(imageLoc, text);
-        this.categories.set(imageLoc, new AACCategory(text));
+      if (this.curCategory == this.homeCategory) {
+        this.categories.set(text, new AACCategory(text));
+        this.curCategory.addItem(imageLoc, text);
       } else {
-        this.curCategory.addItem​(imageLoc, text);
+        this.curCategory.addItem(imageLoc, text);
       }
-    } catch (NullKeyException e) {
-      e.printStackTrace();
+    } catch (Exception e) {
     }
-  } // add​(String imageLoc, String text)
+  } // add(String, String)
 
   /**
    * Gets the current category
+   * 
+   * @return category
    */
   public String getCurrentCategory() {
-    return curCategory.getCategory();
-  } //getCurrentCategory()
+    return this.curCategory.getCategory();
+  } // getCurrentCategory()
 
   /**
    * Provides an array of all the images in the current category
+   * 
+   * @return
    */
   public String[] getImageLocs() {
     return this.curCategory.getImages();
   } // getImageLocs()
 
   /**
-   * Given the image location selected, it determines the associated 
-   * text with the image. If the image provided is a category, it also 
-   * updates the AAC's current category to be the category associated 
-   * with that image
+   * Given the image location selected, it determines the associated text with the
+   * image
    * 
-   * given an image, it will either 
-   *    return the name of the category associated with that image 
-   *    if on the home screen and update the current category to that 
-   *    category or 
-   * 
-   * if homepage
-   *    update curCategory to given catgory
-   *      this.curCatetgory = this.categories.get(imageLoc);
-   *    return NAME of new category (ex: food)
-   *    
-   * if category
-   *    return speech (value)
-   *    if in a category
-   *      it will return the text to be spoken that is 
-   * associated with that image. If the image is not found in the expected area, 
-   * it will throw the ElementNotFoundException
-
+   * @param imageLoc
+   * @return
+   * @throws KeyNotFoundException
    */
-  public String getText(String imageLoc) {
+  public String getText​(String imageLoc) throws KeyNotFoundException {
     // check if in the home page
-    if(this.getCurrentCategory() == null) {
-      // if in homepage, get the 
+    if (this.getCurrentCategory() == this.homeCategory.getCategory()) {
+      // if in homepage, get the categories associated text
       String txt = this.curCategory.getText(imageLoc);
       try {
         this.curCategory = this.categories.get(imageLoc);
       } catch (KeyNotFoundException e) {
+        e.printStackTrace();
       }
       return txt;
     }
-    // // check if in home page usin comparisun to null
-    // if (isCategory​(imageLoc)) {
-    //   try {
-    //     this.curCategory = categories.get(imageLoc);
-    //     return this.curCategory.getCategory();
-    //   } catch (KeyNotFoundException e) {
-    //   }
-    // }
-    // // else, return the text to be spoken that is associated with that image
-    // return curCategory.getText(imageLoc);
 
     return this.curCategory.getText(imageLoc);
-  } // getImageLocs()
+  } // getText​(String)
 
   /**
    * Determines if the image represents a category or text to speak
+   * 
+   * @param imageLoc
+   * @return
    */
   public boolean isCategory​(String imageLoc) {
-    return this.curCategory.hasImage​(imageLoc);
-  } // isCategory​(String imageLoc)
+    return this.homeCategory.hasImage​(imageLoc);
+  } // isCategory​(String)
 
   /**
    * Resets the current category of the AAC back to the default category
    */
   public void reset() {
-    this.curCategory = homeCategory;
+    this.curCategory = this.homeCategory;
   } // reset()
 
   /**
-   * Writes the ACC mappings stored to a file.
+   * Writes the ACC mappings stored to a file
+   * 
+   * @param filename
+   * @throws KeyNotFoundException
+   * @throws IOException
    */
-  public void writeToFile(String filename) {
-    try 
-    (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-      for(int i = 0; i < this.categories.size(); i++) {
-        String category = categories.pairs[i].thisKey();
+  public void writeToFile​(String filename) {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+      for (int i = 0; i < this.categories.size(); i++) {
+        String category = categories.pairs[i].key;
         for (String locate : this.categories.get(category).getImages()) {
-          writer.write(">" + locate + " " + this.categories.get(category).getText(locate) + '\n');
+          writer.write(">" + locate + " " +
+              this.categories.get(category).getText(locate) + '\n');
         }
       }
     } catch (KeyNotFoundException e) {
@@ -198,11 +184,16 @@ public class AACMappings {
     } catch (IOException e) {
       e.printStackTrace();
     }
-  } // writeToFile(filename)
-} // AACMappings Class
+  } // writeToFile​(String)
 
-// for (String category : categories.getAllKeys()) {
-//   for (String locate : this.categories.get(category).getImages()) {
-//     writer.write(locate + this.categories.get(category).getText(locate) + '\n');
-//   }
-// }
+} // class AACMappings
+
+// -----------------------------------------------------
+// if (isCategory​(imageLoc)) {
+// String txt = this.curCategory.getText(imageLoc);
+// this.curCategory = this.categories.get(txt);
+// return txt;
+// } else {
+// String txt = this.curCategory.getText(imageLoc);
+// return txt;
+// } // gettext

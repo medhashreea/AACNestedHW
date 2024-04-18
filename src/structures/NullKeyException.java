@@ -1,5 +1,3 @@
-package structures;
-
 /**
  * Exceptions that indicate that a key is null.
  *

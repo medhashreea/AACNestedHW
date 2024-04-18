@@ -1,10 +1,8 @@
-package structures;
-
 /**
- * An easy way to store key/value pairs.  We assume that other
+ * An easy way to store key/value pairs. We assume that other
  * classes will access fields directly.
  */
-class KVPair<K,V> {
+class KVPair<K, V> {
   // +--------+------------------------------------------------------
   // | Fields |
   // +--------+
@@ -12,12 +10,12 @@ class KVPair<K,V> {
   /**
    * The key.
    */
-  private K key;
+  K key;
 
   /**
    * The value.
    */
-  private V value;
+  V value;
 
   // +--------------+------------------------------------------------
   // | Constructors |
@@ -42,23 +40,11 @@ class KVPair<K,V> {
   // | Standard methods |
   // +------------------+
 
-  public KVPair<K,V> clone() {
-    return new KVPair<K,V>(this.key, this.value);
+  public KVPair<K, V> clone() {
+    return new KVPair<K, V>(this.key, this.value);
   } // clone()
 
   public String toString() {
     return "{ " + this.key.toString() + " : " + this.value.toString() + " }";
   } // toString()
-
-  public K thisKey(){
-    return this.key;
-  }
-
-  public V thisVal(){
-    return this.value;
-  }
-
-  public void changeVal(V newVal) {
-    this.value = newVal;
-  }
 } // class KVPair
