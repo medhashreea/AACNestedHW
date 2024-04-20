@@ -206,12 +206,11 @@ public class AssociativeArray<K, V> {
    * 
    * @throws KeyNotFoundException
    */
-  public K[] getAllKeys() throws KeyNotFoundException {
-    K[] keyArr = (K[]) new Object[this.size];
+  public String[] getAllKeys() throws KeyNotFoundException {
+    String[] keyArr = new String[this.size];
 
     for (int i = 0; i < this.size; i++) {
-      // keyArr[i] = pairs[i].thisKey().toString();
-      keyArr[i] = this.pairs[i].key;
+      keyArr[i] = this.pairs[i].key.toString();
     }
     return keyArr;
   } // getAllKeys()

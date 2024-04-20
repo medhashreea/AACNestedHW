@@ -72,6 +72,7 @@ public class AACMappings extends Object {
 
       input.close();
     } catch (FileNotFoundException | KeyNotFoundException e) {
+      System.err.println(e.toString());
     }
 
     reset();
