@@ -1,5 +1,3 @@
-
-
 import static java.lang.reflect.Array.newInstance;
 
 /**
@@ -59,14 +57,12 @@ public class AssociativeArray<K, V> {
   public AssociativeArray<K, V> clone() {
     // create new array
     AssociativeArray<K, V> clonedArr = new AssociativeArray<K, V>();
-    try {
-      // loop to iterate
-      for (int i = 0; i < this.size; i++) {
-        // set each thing in null to the key and value
-        clonedArr.set(this.pairs[i].key, this.pairs[i].value);
-      }
-    } catch (NullKeyException e) {
+    // loop to iterate
+    for (int i = 0; i < this.size; i++) {
+      // set each thing in null to the key and value
+      clonedArr.pairs[i] = new KVPair<>(this.pairs[i].key, this.pairs[i].value);
     }
+    clonedArr.size = this.size;
     return clonedArr;
   } // clone()
 
@@ -77,7 +73,7 @@ public class AssociativeArray<K, V> {
     String stringHolder = "";
 
     // if array is empty, do
-    if (this.pairs.length == 0) {
+    if (this.size == 0) {
       return "{}";
       // else, do for loop which goes until last key
     } else {
@@ -207,13 +203,15 @@ public class AssociativeArray<K, V> {
   /**
    * Creates an array of all the keys in the KeyValue pair,
    * and returns the array
+   * 
+   * @throws KeyNotFoundException
    */
-  public String[] getAllKeys() {
-    String[] keyArr = new String[this.size];
+  public K[] getAllKeys() throws KeyNotFoundException {
+    K[] keyArr = (K[]) new Object[this.size];
 
     for (int i = 0; i < this.size; i++) {
       // keyArr[i] = pairs[i].thisKey().toString();
-      keyArr[i] = (String) pairs[i].key;
+      keyArr[i] = this.pairs[i].key;
     }
     return keyArr;
   } // getAllKeys()
@@ -237,9 +235,9 @@ public class AssociativeArray<K, V> {
     if (key == null) {
       throw new KeyNotFoundException();
     }
-    
+
     for (int i = 0; i < this.size; i++) {
-      if (this.pairs[i].key.equals(key)) {
+      if ((this.pairs[i] != null) && (this.pairs[i].key.equals(key))) {
         return i;
       } // return key in current index
     } // for loop

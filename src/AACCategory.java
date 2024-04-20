@@ -44,8 +44,12 @@ public class AACCategory extends Object {
    * @param text
    * @throws NullKeyException
    */
-  public void addItem(String imageLoc, String text) throws NullKeyException {
-    this.txtArr.set(imageLoc, text);
+  public void addItem(String imageLoc, String text) {
+    try {
+      this.txtArr.set(imageLoc, text);
+    } catch (NullKeyException e) {
+      e.printStackTrace();
+    }
   } // addItem(String, String)
 
   /**
@@ -63,7 +67,11 @@ public class AACCategory extends Object {
    * @return keyArr
    */
   public String[] getImages() {
-    return this.txtArr.getAllKeys();
+    try {
+      return this.txtArr.getAllKeys();
+    } catch (KeyNotFoundException e) {
+      return new String[] {};
+    }
   } // getImages()
 
   /**
@@ -73,8 +81,12 @@ public class AACCategory extends Object {
    * @return
    * @throws KeyNotFoundException
    */
-  public String getText(String imageLoc) throws KeyNotFoundException {
-    return this.txtArr.get(imageLoc);
+  public String getText(String imageLoc) {
+    try {
+      return this.txtArr.get(imageLoc);
+    } catch (Exception e) {
+      return "";
+    }
   } // getText(String)
 
   /**
