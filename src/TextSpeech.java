@@ -2,46 +2,48 @@ import java.util.Locale;
 import javax.speech.Central;
 import javax.speech.synthesis.Synthesizer;
 import javax.speech.synthesis.SynthesizerModeDesc;
-  
+
+/**
+ * @author Catie Baker
+ */
+
 public class TextSpeech {
-  
-    public static void main(String[] args)
-    {
-  
+
+    public static void main(String[] args) {
+
         try {
             // Set property as Kevin Dictionary
             System.setProperty(
-                "freetts.voices",
-                "com.sun.speech.freetts.en.us"
-                    + ".cmu_us_kal.KevinVoiceDirectory");
-  
+                    "freetts.voices",
+                    "com.sun.speech.freetts.en.us"
+                            + ".cmu_us_kal.KevinVoiceDirectory");
+
             // Register Engine
             Central.registerEngineCentral(
-                "com.sun.speech.freetts"
-                + ".jsapi.FreeTTSEngineCentral");
-  
+                    "com.sun.speech.freetts"
+                            + ".jsapi.FreeTTSEngineCentral");
+
             // Create a Synthesizer
-            Synthesizer synthesizer
-                = Central.createSynthesizer(
+            Synthesizer synthesizer = Central.createSynthesizer(
                     new SynthesizerModeDesc(Locale.US));
-  
+
             // Allocate synthesizer
             synthesizer.allocate();
-  
+
             // Resume Synthesizer
             synthesizer.resume();
-  
+
             // Speaks the given text
             // until the queue is empty.
             synthesizer.speakPlainText(
-                "GeeksforGeeks", null);
+                    "GeeksforGeeks", null);
             synthesizer.waitEngineState(
-                Synthesizer.QUEUE_EMPTY);
-  
+                    Synthesizer.QUEUE_EMPTY);
+
             // Deallocate the Synthesizer.
             synthesizer.deallocate();
         }
-  
+
         catch (Exception e) {
             e.printStackTrace();
         }

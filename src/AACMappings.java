@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 /**
@@ -41,14 +42,14 @@ public class AACMappings extends Object {
   /**
    * Creates a new empty filename with the given filename
    */
-  public AACMappings(String filename) throws FileNotFoundException {
-    File file = new File(filename);
-    this.homeCategory = new AACCategory("");
-    this.categories = new AssociativeArray<String, AACCategory>();
-
+  public AACMappings(String filename) {
     try {
       // organizing the home category to add things
-      Scanner input = new Scanner(file); // create a Scanner object
+      Scanner input = new Scanner(new File(filename)); // create a Scanner object
+      this.homeCategory = new AACCategory("");
+      this.categories = new AssociativeArray<String, AACCategory>();
+      this.curCategory = this.homeCategory;
+      categories.set("", curCategory);
 
       while (input.hasNext()) {
         String _line = input.nextLine();
@@ -59,19 +60,17 @@ public class AACMappings extends Object {
         // if the line doesn't start with ">", the line is a category
         if (_line.charAt(0) != '>') {
           // set current category as the given category naem
-          curCategory = this.homeCategory;
-          this.add​(stringSplit[0], stringSplit[1]);
-          curCategory = this.categories.get(stringSplit[0]);
+          curCategory = new AACCategory(stringSplit[1]);
+          categories.set(stringSplit[0], curCategory);
+          this.homeCategory.addItem(stringSplit[0], stringSplit[1]);
           // if not a category, it is a inner image
         } else {
-          this.add​(stringSplit[0].substring(1), stringSplit[1]);
+          this.curCategory.addItem(stringSplit[0].substring(1), stringSplit[1]);
           // reset the first string to the string without the ">"
         } // if/else
-
       } // while loop
-
       input.close();
-    } catch (FileNotFoundException | KeyNotFoundException e) {
+    } catch (FileNotFoundException | NullKeyException e) {
       System.err.println(e.toString());
     }
 
@@ -88,18 +87,17 @@ public class AACMappings extends Object {
    * 
    * @param imageLoc
    * @param text
-   * @throws KeyNotFoundException
    * @throws NullKeyException
    */
   public void add​(String imageLoc, String text) {
     try {
-      if (this.curCategory == this.homeCategory) {
-        this.categories.set(text, new AACCategory(text));
-        this.curCategory.addItem(imageLoc, text);
+      if (this.curCategory == null) {
+        this.categories.set(imageLoc, new AACCategory(text));
+        // this.curCategory.addItem(imageLoc, text);
       } else {
         this.curCategory.addItem(imageLoc, text);
       }
-    } catch (Exception e) {
+    } catch (NullKeyException e) {
     }
   } // add(String, String)
 
@@ -109,6 +107,9 @@ public class AACMappings extends Object {
    * @return category
    */
   public String getCurrentCategory() {
+    if (this.curCategory == null) {
+      return null;
+    }
     return this.curCategory.getCategory();
   } // getCurrentCategory()
 
@@ -118,7 +119,10 @@ public class AACMappings extends Object {
    * @return
    */
   public String[] getImageLocs() {
-    return this.curCategory.getImages();
+    if (this.curCategory != null) {
+      return this.curCategory.getImages();
+    }
+    return null;
   } // getImageLocs()
 
   /**
@@ -129,19 +133,14 @@ public class AACMappings extends Object {
    * @return
    * @throws KeyNotFoundException
    */
-  public String getText​(String imageLoc) throws KeyNotFoundException {
-    // check if in the home page
-    if (this.getCurrentCategory() == this.homeCategory.getCategory()) {
-      // if in homepage, get the categories associated text
-      String txt = this.curCategory.getText(imageLoc);
+  public String getText​(String imageLoc) {
+    if (isCategory​(imageLoc)) {
       try {
         this.curCategory = this.categories.get(imageLoc);
+        return this.curCategory.getCategory();
       } catch (KeyNotFoundException e) {
-        e.printStackTrace();
       }
-      return txt;
     }
-
     return this.curCategory.getText(imageLoc);
   } // getText​(String)
 
@@ -152,7 +151,7 @@ public class AACMappings extends Object {
    * @return
    */
   public boolean isCategory​(String imageLoc) {
-    return this.homeCategory.hasImage​(imageLoc);
+    return this.categories.hasKey(imageLoc);
   } // isCategory​(String)
 
   /**
@@ -170,31 +169,24 @@ public class AACMappings extends Object {
    * @throws IOException
    */
   public void writeToFile​(String filename) {
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-      for (int i = 0; i < this.categories.size(); i++) {
-        String category = categories.pairs[i].key;
-        for (String locate : this.categories.get(category).getImages()) {
-          writer.write(">" + locate + " " +
-              this.categories.get(category).getText(locate) + '\n');
+    try {
+      PrintWriter pen = new PrintWriter(new FileWriter(filename));
+      // loop between categories
+      for (String catName : categories.getAllKeys()) {
+        // loop inside a cateory
+        AACCategory catHold = this.categories.get(catName);
+        pen.println(catName + " " + catHold.getCategory());
+        for (String items : catHold.getImages()) {
+          if (catHold != homeCategory) {
+            pen.println(">" + items + " " + catHold.getText(items));
+          }
         }
       }
+      pen.close();
     } catch (KeyNotFoundException e) {
-      e.printStackTrace();
     } catch (FileNotFoundException e) {
-      e.printStackTrace();
     } catch (IOException e) {
-      e.printStackTrace();
     }
   } // writeToFile​(String)
 
 } // class AACMappings
-
-// -----------------------------------------------------
-// if (isCategory​(imageLoc)) {
-// String txt = this.curCategory.getText(imageLoc);
-// this.curCategory = this.categories.get(txt);
-// return txt;
-// } else {
-// String txt = this.curCategory.getText(imageLoc);
-// return txt;
-// } // gettext

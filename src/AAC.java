@@ -10,7 +10,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileNotFoundException;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -45,11 +44,7 @@ public class AAC implements ActionListener {
 	 *                 images and text that will be in the AAC
 	 */
 	public AAC(String filename) {
-		try {
-			this.aacMappings = new AACMappings(filename);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		this.aacMappings = new AACMappings(filename);
 		this.images = this.aacMappings.getImageLocs();
 		this.startIndex = 0;
 		this.endIndex = Math.min(NUM_ACROSS * NUM_DOWN, this.images.length);
@@ -192,11 +187,7 @@ public class AAC implements ActionListener {
 			this.endIndex = Math.min(NUM_ACROSS * NUM_DOWN, this.images.length);
 		} else {
 			if (this.aacMappings.getCurrentCategory().equals("")) {
-				try {
-					this.aacMappings.getText​(actionCommand);
-				} catch (KeyNotFoundException e1) {
-					e1.printStackTrace();
-				}
+				this.aacMappings.getText​(actionCommand);
 				this.images = this.aacMappings.getImageLocs();
 				this.startIndex = 0;
 				this.endIndex = Math.min(NUM_ACROSS * NUM_DOWN, this.images.length);

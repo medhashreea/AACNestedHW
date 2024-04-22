@@ -58,6 +58,9 @@ public class AACCategory extends Object {
    * @return category
    */
   public String getCategory() {
+    if(this.category == null) {
+      return null;
+    }
     return this.category;
   } // getCategory()
 

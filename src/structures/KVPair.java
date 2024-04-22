@@ -1,6 +1,8 @@
 /**
  * An easy way to store key/value pairs. We assume that other
  * classes will access fields directly.
+ * 
+ * @author Samuel A. Rebelsky
  */
 class KVPair<K, V> {
   // +--------+------------------------------------------------------
@@ -10,12 +12,12 @@ class KVPair<K, V> {
   /**
    * The key.
    */
-  K key;
+  private K key;
 
   /**
    * The value.
    */
-  V value;
+  private V value;
 
   // +--------------+------------------------------------------------
   // | Constructors |
@@ -47,4 +49,16 @@ class KVPair<K, V> {
   public String toString() {
     return "{ " + this.key.toString() + " : " + this.value.toString() + " }";
   } // toString()
+
+  public K getK() {
+    return this.key;
+  } // getK() 
+
+  public V getV() {
+    return this.value;
+  } // getV()
+
+  public V setV(V value) {
+    return this.value = value;
+  } // getV()
 } // class KVPair
