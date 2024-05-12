@@ -12,6 +12,7 @@ Acknowledgements:
     Tutors: Boston, Diego, Ishitha
     Peers: Alyssa
     Faculty: Sam
+    Sorces: Catie Baker
 
 Links:
 
